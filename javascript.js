@@ -28,6 +28,7 @@ function playRound(userSelection) {
   resetScores();
   displayUpdatedScore(winner);
   displayRoundOutcome(winner);
+
 }
 
 function selectComputerOption() {
