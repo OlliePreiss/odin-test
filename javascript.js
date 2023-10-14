@@ -1,53 +1,86 @@
-//get computer choice
-let computerChoice;
-let playerSelection;
-let result;
+const rock = document.querySelector("#rock");
+const paper = document.querySelector("#paper");
+const scisors = document.querySelector("#scisors");
+const resultMessage = document.querySelector("#result");
+let userScoreDisplay = document.querySelector("#userScore");
+let computerScoreDisplay = document.querySelector("#computerScore");
+let userScoreTally = 0;
+let computerScoreTally = 0;
 
-function getComputerChoice() {
-  let number = Math.random()*3;
-  number = Math.round(number);
-  switch (number) {
-    case 1: computerChoice = "ROCK";
-    break;
-    case 2: computerChoice = "PAPER";
-    break;
-    case 3: computerChoice = "SCISORS";
-    break;
-  }
+
+rock.addEventListener('click', () => {
+  playRound(rock);
+  console.log("Clicked on rock");
+})
+
+paper.addEventListener('click', () => {
+  playRound(paper);
+})
+
+scisors.addEventListener('click', () => {
+  playRound(scisors);
+})
+
+
+function playRound(userSelection) {
+  let computerSelection = selectComputerOption()
+  let winner = determineWinner(userSelection, computerSelection)
+  resetScores();
+  displayUpdatedScore(winner);
+  displayRoundOutcome(winner);
 }
 
-function getPlayerSelection() {
-  playerInput = prompt("Make your choice:").toUpperCase;
-  if (playerInput === "ROCK" || "PAPER" || "SCISORS") {
-    playerSelection = playerInput;
+function selectComputerOption() {
+  let rand = Math.floor((Math.random() * 3) + 1);
+  if (rand === 1) {
+    return "rock";
+  } else if (rand === 2) {
+    return "paper";
   } else {
-    console.log("Invalid choice, go again");
-    getPlayerSelection();
-  }
-
-function getResult(computerChoice, playerSelection) {
-  if (computerChoice === playerSelection) {
-    result = "Draw";
-  } else if (computerChoice === "ROCK") {
-    result = playerSelection === "PAPER" ? "Win" : "Loss";
-  }  else if (computerChoice === "PAPER") {
-    result = playerSelection === "SCISORS" ? "Win" : "Loss";
+    return "scisors";
   }
 }
+
+function determineWinner(user,computer) {
+  // captures the three scenarios in which the user loses
+  if ((user == rock && computer == "paper") || (user == paper && computer == "scisors") || (user == scisors && computer == "rock")) {
+    computerScoreTally += 1;
+    return "Computer";
+  // captures the three scenarios in which the user wins
+  } else if ((user == rock && computer == "scisors") || (user == paper && computer == "rock") || (user == scisors && computer == "paper")) {
+    userScoreTally += 1;
+    return "User";
+  } else {
+    return "draw";
+  }
 }
 
-function game() {
-  let playerScoreCount = 0;
-  let computerScoreCount = 0;
-
-  for (let i = 1; i <= 5; i++) {
-    getComputerChoice;
-    getPlayerSelection;
-    getResult;
-    console.log(result)
-    if (result === "Win") {playerScoreCount++}
-    if (result === "Loss") {computerScoreCount++}
+function displayRoundOutcome(winner) {
+  resultMessage.removeChild(resultMessage.lastChild)
+  const p = document.createElement("p");
+  if (winner == "User") {
+    p.textContent = "User wins!";
+  } else if (winner == "Computer") {
+    p.textContent = "Computer wins!";
+  } else if (winner = "draw") {
+    p.textContent = "Draw!"
   }
+  resultMessage.appendChild(p)
+}
 
-  playerScoreCount > computerScoreCount ? console.log("You win") : console.log("You lose");
+function displayUpdatedScore(winner) {
+  if (winner == "User") {
+    userScoreDisplay.textContent = `${userScoreTally}`;
+  } else if (winner == "Computer") {
+    computerScoreDisplay.textContent = `${computerScoreTally}`;
+  }
+}
+
+function resetScores() {
+  if ((userScoreTally > 5) || (computerScoreTally > 5)) {
+    userScoreTally = 0;
+    userScoreDisplay.textContent = `${userScoreTally}`;
+    computerScoreTally = 0;
+    computerScoreDisplay.textContent = `${computerScoreTally}`;
+  }
 }
